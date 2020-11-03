@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pub mqtt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background: #f40303;
+        }
+
+        .toggle-button {
+            padding: 12.5px 0;
+            position: absolute;
+            top: 50%;
+            left: 46.5%;
+            -webkit-filter: url("#goo");
+            filter: url("#goo");
+        }
+
+        .toggle-button input[type="checkbox"] {
+            position: absolute;
+            left: -9999px;
+            visibility: hidden;
+        }
+
+        .toggle-button .switch {
+            position: relative;
+            height: 20px;
+            width: 80px;
+            display: block;
+            cursor: pointer;
+            border-radius: 100px;
+            background-color: #FFF;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+            -webkit-transition: .3s all ease;
+            -moz-transition: .3s all ease;
+            -o-transition: .3s all ease;
+            -ms-transition: .3s all ease;
+            transition: .3s all ease;
+        }
+
+        .toggle-button .switch:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: -6px;
+            border-radius: 100%;
+            height: 32px;
+            background-color: #FFF;
+            width: 32px;
+            box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.2);
+            -webkit-transform: translate(0, 0);
+            -moz-transform: translate(0, 0);
+            -ms-transform: translate(0, 0);
+            -o-transform: translate(0, 0);
+            transform: translate(0, 0);
+            -webkit-transition: .3s all ease;
+            -moz-transition: .3s all ease;
+            -o-transition: .3s all ease;
+            -ms-transition: .3s all ease;
+            transition: .3s all ease;
+        }
+
+        .toggle-button input[type="checkbox"]:checked+.switch,
+        .toggle-button input[type="checkbox"]:checked+.switch:after {
+            background-color: #FFF;
+        }
+
+        .toggle-button input[type="checkbox"]:checked+.switch:after {
+            -webkit-transform: translate(50px, 0);
+            -moz-transform: translate(50px, 0);
+            -ms-transform: translate(50px, 0);
+            -o-transform: translate(50px, 0);
+            transform: translate(50px, 0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toggle-button" id="ledbtn">
+        <div class="input-field">
+            <input type="checkbox" name="checkbox" id="switch">
+            <label for="switch" class="switch"></label>
+        </div>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="6.8" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
+                    result="goo" />
+                <feBlend in="SourceGraphic" in2="goo" />
+            </filter>
+        </defs>
+    </svg>
+
+
+
+    <script src="js/mqtt.min.js"></script>
+    <script>
+
+
+
+        var ledbtn = document.getElementById("ledbtn");
+        var ledbtnWwitch = document.getElementById("switch");
+
+
+       var client = mqtt.connect({ host: '148.70.212.82', port: 3939 }); 
+        var topic = '/testmsg'
+        var message = 'html send!'
+
+
+
+        ledbtnWwitch.addEventListener("click", function (e) {
+
+
+
+            if (ledbtnWwitch.checked) {
+                console.log(ledbtnWwitch.checked)
+               var client = mqtt.connect({ host: '148.70.212.82', port: 3939 }); 
+
+                client.on('connect', function () {
+                    client.subscribe(topic, function (err) {
+                        if (!err) {
+                            client.publish(topic, "LOW")
+                        }
+                    })
+                })
+            } else {
+                console.log(ledbtnWwitch.checked)
+               var client = mqtt.connect({ host: 'localhost', port: 3939 }); 
+
+                client.on('connect', function () {
+                    client.subscribe(topic, function (err) {
+                        if (!err) {
+                            client.publish(topic, "HEIG")
+                        }
+                    })
+                })
+            }
+
+        }, true)
+
+
+
+
+
+
+        client.on('connect', function () {
+            client.subscribe(topic, function (err) {
+                if (!err) {
+                    client.publish(topic, "html send msg")
+                }
+            })
+        })
+
+
+
+
+
+        // client.on('message', function (topic, message) {
+        //     // message is Buffer
+        //     console.log("topic: " + topic)
+        //     console.log(message.toString())
+        //     client.end()
+        // })
+
+
+    </script>
+
+</body>
+
+</html>
+
+
